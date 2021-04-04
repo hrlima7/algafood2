@@ -1,4 +1,4 @@
-package br.com.roma.api.controller;
+package br.com.roma.api.controller.estatistica;
 
 import java.util.List;
 
