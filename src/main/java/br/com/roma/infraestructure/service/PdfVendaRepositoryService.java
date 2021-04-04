@@ -37,12 +37,9 @@ public class PdfVendaRepositoryService  implements VendaReportService{
 		List<VendaDiaria> vendaDiaria = vendaQueryService.consultarVendasDiarias(filtro);
 		
 		JRBeanCollectionDataSource dataSource =  
-				new JRBeanCollectionDataSource(vendaDiaria);
-				
+				new JRBeanCollectionDataSource(vendaDiaria);	
 				
 				JasperPrint jasperPrint  = JasperFillManager.fillReport(inputStream, parametros, dataSource);
-		
-		
 		
 			return JasperExportManager.exportReportToPdf(jasperPrint);
 		} catch (JRException e) {

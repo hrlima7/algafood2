@@ -12,6 +12,6 @@ import lombok.Setter;
 public class RestauranteRelatorio {
 	
 	private String nome;
-	private BigDecimal TaxaFrete;
+	private BigDecimal taxaFrete;
 
 }
