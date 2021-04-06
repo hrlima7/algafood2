@@ -27,9 +27,7 @@ public class RestauranteQueryServiceImpl implements RestauranteReportService {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<RestauranteRelatorio> query = builder.createQuery(RestauranteRelatorio.class);
 		Root<Restaurante> root = query.from(Restaurante.class);
-		
 	
-				
 				query.multiselect(root.get("nome"),root.get("taxaFrete"));
 			
 		

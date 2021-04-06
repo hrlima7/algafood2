@@ -31,16 +31,14 @@ public class RestauranteEstatisticaController {
 		
 	}
 	
-	@GetMapping(path = "/restaurantes", produces =MediaType.APPLICATION_PDF_VALUE)
-	
+	@GetMapping(path = "/restaurantes", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<byte[]> listarPDF(){
 		
 		byte[] relatorio =  restaurantePDF.emitirReportRestaurantePDF();
 		
 		HttpHeaders headers = new HttpHeaders();
 				headers.add(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=Restaurante.pdf");
-				
-			
+		
 				
 		return ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_PDF)
