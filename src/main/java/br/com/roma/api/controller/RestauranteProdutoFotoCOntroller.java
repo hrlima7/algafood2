@@ -17,7 +17,7 @@ import br.com.roma.domain.model.service.CatalogoFotoProdutoService;
 import br.com.roma.domain.model.service.ProdutoService;
 
 @RestController
-@RequestMapping("/restaurante/{restuarnateId}/produtos/{produtoId}/foto")
+@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class RestauranteProdutoFotoCOntroller {
 	
 	@Autowired
@@ -34,6 +34,7 @@ public class RestauranteProdutoFotoCOntroller {
 			Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
 	
 			MultipartFile arquivo =  fotoProdutoInput.getArquivo();
+			
 			
 				FotoProduto foto =  new FotoProduto();
 				foto.setProduto(produto);
