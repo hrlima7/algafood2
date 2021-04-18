@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.roma.domain.exception.NegocioException;
 import br.com.roma.domain.model.Pedido;
 import br.com.roma.domain.model.StatusPedido;
-import br.com.roma.domain.model.service.EnvioEmailService.Mensagem;
+import br.com.roma.domain.model.repository.PedidoRespository;
 
 @Service
 public class FluxoPedidoService {
@@ -18,7 +18,8 @@ public class FluxoPedidoService {
 	private PedidoService pedidoService;
 	
 	@Autowired
-	private EnvioEmailService envioEmail;
+	private PedidoRespository pedidoRepository;
+	
 	
 	@Transactional
 	public void confirmar(Long pedidoId) {
@@ -32,15 +33,7 @@ public class FluxoPedidoService {
 		pedido.setStatus(StatusPedido.CONFIRMADO);
 		pedido.setDatacriacao(OffsetDateTime.now());
 		
-		Mensagem messagem =  Mensagem.builder()
-		.assunto(pedido.getRestaurante().getNome()+"Pedido confirmado")
-		.corpo("pedidoCOnfirmado.html")
-		.variavel("pedido", pedido)
-		.destinatario(pedido.getCliente().getEmail())
-		.build();
-		
-		
-		envioEmail.enviar(messagem);
+
 	}
 	
 	@Transactional
