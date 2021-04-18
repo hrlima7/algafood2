@@ -20,16 +20,15 @@ public class PedidoService {
 		return pedidoRepository.findAll();
 		
 	}
-	
-	
-		public Pedido buscarOuFalhar(Long pedidoId) {	
-			return pedidoRepository.findById(pedidoId).
+
+	public Pedido buscarOuFalhar(Long pedidoId) {	
+		return pedidoRepository.findById(pedidoId).
 					orElseThrow( ()-> new PedidoNaoEncontradoException (pedidoId));
 		}
 		
-		public Pedido salvar(Pedido pedido) {
-				pedido.setStatus(pedido.getStatus().CRIADO);
-					return pedidoRepository.save(pedido);
+	public Pedido salvar(Pedido pedido) {
+		pedido.setStatus(pedido.getStatus().CRIADO);
+			return pedidoRepository.save(pedido);
 			
 		}
 

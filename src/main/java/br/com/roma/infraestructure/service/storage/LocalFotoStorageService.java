@@ -1,6 +1,5 @@
 package br.com.roma.infraestructure.service.storage;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,7 +12,8 @@ import br.com.roma.domain.model.service.FotoStorageService;
 @Service
 public class LocalFotoStorageService implements FotoStorageService {
 
-	private 
+	//@Value("algafood.storage.local.diretorio-fotos")
+	private Paths diretorioFotos;
 	
 	@Override
 	public void armazenar(NovaFoto novaFoto) {
@@ -24,9 +24,9 @@ public class LocalFotoStorageService implements FotoStorageService {
 		
 			FileCopyUtils.copy(novaFoto.getInputStream(),
 					  Files.newOutputStream(arquivoPath));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			
-			e.printStackTrace();
+		throw new StorageException("Não foi possivel armazenar o arquivo", e);
 		}
 		  
 	}

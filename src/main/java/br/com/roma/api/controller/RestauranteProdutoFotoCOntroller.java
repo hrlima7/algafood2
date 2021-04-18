@@ -1,6 +1,8 @@
 package br.com.roma.api.controller;
 
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +31,7 @@ public class RestauranteProdutoFotoCOntroller {
 	
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProduto atualizarFoto(@PathVariable Long restauranteId,
-					@PathVariable Long produtoId, FotoProdutoInput fotoProdutoInput ) {
+					@PathVariable Long produtoId, FotoProdutoInput fotoProdutoInput ) throws IOException  {
 		
 			Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
 	
@@ -44,7 +46,7 @@ public class RestauranteProdutoFotoCOntroller {
 				foto.setNomeArquivo(arquivo.getOriginalFilename());
 				
 				
-				FotoProduto fotoSalva = catalogoFotoProduto.salvar(foto);
+				FotoProduto fotoSalva = catalogoFotoProduto.salvar(foto, arquivo.getInputStream());
 					return fotoSalva;
 			
 		

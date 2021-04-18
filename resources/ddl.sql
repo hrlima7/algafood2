@@ -9,7 +9,7 @@ INSERT INTO `estado` (`id`, `nome`) VALUES (NULL, 'BAHIA');
 INSERT INTO `estado` (`id`, `nome`) VALUES (NULL, 'SERGIPE');
 INSERT INTO `estado` (`id`, `nome`) VALUES (NULL, 'SAO PAULO');
 INSERT INTO `estado` (`id`, `nome`) VALUES (NULL, 'RIO DE JANEIRO');
-INSERT INTO `estado` (`id`, `nome`) VALUES (NULL, 'RIO GRANDE DO SUL')
+INSERT INTO `estado` (`id`, `nome`) VALUES (NULL, 'RIO GRANDE DO SUL');
 
 INSERT INTO `cidade` (`id`, `nome`, `estado_id`) VALUES (NULL, 'FEIRA DE SANTANA', '1');
 INSERT INTO `cidade` (`id`, `nome`, `estado_id`) VALUES (NULL, 'ENTRE RIOS', '1');
