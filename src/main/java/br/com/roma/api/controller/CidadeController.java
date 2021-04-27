@@ -23,7 +23,8 @@ import br.com.roma.domain.exception.EntidadeNaoEncontradaException;
 import br.com.roma.domain.exception.NegocioException;
 import br.com.roma.domain.model.Cidade;
 import br.com.roma.domain.model.service.CidadeService;
-
+import io.swagger.annotations.Api;
+@Api(tags = "cidades" )
 @RestController
 @RequestMapping("/cidades")
 public class CidadeController implements Serializable {
