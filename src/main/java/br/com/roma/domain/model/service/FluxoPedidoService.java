@@ -33,6 +33,7 @@ public class FluxoPedidoService {
 		pedido.setStatus(StatusPedido.CONFIRMADO);
 		pedido.setDatacriacao(OffsetDateTime.now());
 		
+		pedidoRepository.save(pedido);
 
 	}
 	

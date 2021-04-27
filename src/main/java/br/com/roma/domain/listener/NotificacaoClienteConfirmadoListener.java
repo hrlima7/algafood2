@@ -5,6 +5,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import br.com.roma.domain.event.PedidoConfirmadoEvent;
+import br.com.roma.domain.model.Pedido;
 import br.com.roma.domain.model.service.EnvioEmailService;
 import br.com.roma.domain.model.service.EnvioEmailService.Mensagem;
 
