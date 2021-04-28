@@ -1,4 +1,4 @@
-package br.com.roma.infraestructure.core.openapi;
+package br.com.roma.infraestructure.core.springfox;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
