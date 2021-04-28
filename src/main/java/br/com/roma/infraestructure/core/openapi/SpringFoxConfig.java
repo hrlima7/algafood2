@@ -2,12 +2,14 @@ package br.com.roma.infraestructure.core.openapi;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.swagger.models.Tag;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -26,8 +28,9 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 				.apis(RequestHandlerSelectors.basePackage("br.com.roma.api"))
 			  //.paths(PathSelectors.ant("/restaurantes/*"))
 				.build()
+			//.globalResponseMessage(RequestMethod.GET, ResponseMessageBuilder)
 			.apiInfo(apiInfo()) //aplicacao das informacoes do Metodo apiInfo
-			.tags(new springfox.documentation.service.Tag("cidades", "Descricao da cidade"));
+			.tags(new springfox.documentation.service.Tag("cidades", "Descricao da cidade")); //inseri descricao
 		
 	}
 	

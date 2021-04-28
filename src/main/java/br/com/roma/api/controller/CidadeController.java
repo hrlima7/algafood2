@@ -1,12 +1,15 @@
 package br.com.roma.api.controller;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,12 +21,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roma.domain.exception.EntidadeNaoEncontradaException;
 import br.com.roma.domain.exception.NegocioException;
 import br.com.roma.domain.model.Cidade;
 import br.com.roma.domain.model.service.CidadeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 @Api(tags = "cidades" )
 @RestController
 @RequestMapping("/cidades")
@@ -35,6 +42,7 @@ public class CidadeController implements Serializable {
 	@Autowired
 	CidadeService cidadeService;	
 	
+	@ApiOperation("Lista as cidades")
 	@GetMapping
 	public List<Cidade> listar(){	
 		return cidadeService.buscarTodos();		
@@ -55,7 +63,18 @@ public class CidadeController implements Serializable {
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cidade salvar (@RequestBody @Valid Cidade cidade) {
 		try {
-			return cidadeService.salvar(cidade);
+		Cidade cidadeSalva =  cidadeService.salvar(cidade);
+		
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+		.path("/{id}")
+		.buildAndExpand(cidadeSalva.getId()).toUri();
+		
+		HttpServletResponse response = ((ServletRequestAttributes)
+				RequestContextHolder.getRequestAttributes()).getResponse();
+		
+		response.setHeader(HttpHeaders.LOCATION, uri.toString());
+		
+		return cidadeSalva;
 		}catch(EntidadeNaoEncontradaException e){
 			throw new NegocioException (e.getMessage());
 		}
@@ -72,6 +91,8 @@ public class CidadeController implements Serializable {
 					
 					try {
 					return cidadeService.salvar(cidadeNova);		
+					
+				
 					
 					}catch(EntidadeNaoEncontradaException e) {
 					System.out.println("deu errado");
