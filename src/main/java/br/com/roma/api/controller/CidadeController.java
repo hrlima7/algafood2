@@ -1,5 +1,7 @@
 package br.com.roma.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -7,8 +9,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,106 +30,113 @@ import br.com.roma.domain.model.Cidade;
 import br.com.roma.domain.model.service.CidadeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-@Api(tags = "cidades" )
+
+@Api(tags = "cidades")
 @RestController
 @RequestMapping("/cidades")
 public class CidadeController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	@Autowired
-	CidadeService cidadeService;	
-	
+	CidadeService cidadeService;
+
 	@ApiOperation("Lista as cidades")
 	@GetMapping
-	public List<Cidade> listar(){	
-		return cidadeService.buscarTodos();		
-	}	
-	
+	public List<Cidade> listar() {
+		return cidadeService.buscarTodos();
+	}
+
 	@SuppressWarnings({ "deprecation", "unused" })
 	@GetMapping("/{id}")
-	public ResponseEntity<Cidade> buscar(@PathVariable Long id) {		
-		 Cidade cidade = cidadeService.buscarOuFalhar(id);
-		
-		 cidade.add(new Link("http://localhost:8080/cidades/1"));
-		 
-	 // cidade.add(new Link("http://localhost:8080/cidades",IanaLinkRelations.COLLECTION));
-		cidade.add(new Link("http://localhost:8080/cidades","cidades"));
+	public ResponseEntity<Cidade> buscar(@PathVariable Long id) {
+		Cidade cidade = cidadeService.buscarOuFalhar(id);
 
-		cidade.getEstado().add(new Link("http://localhost:8080/estados/1"));
+		cidade.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class)
+				.buscar(cidade.getId())).withSelfRel());
+		cidade.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class)
+				.listar()).withRel("cidades"));
+		cidade.getEstado()
+				.add(WebMvcLinkBuilder.linkTo(methodOn(EstadoController.class)
+						.buscar(cidade.getEstado().getId())).withSelfRel());
+
+		//cidade.getEstado()
+		//.add(WebMvcLinkBuilder.linkTo(EstadoController.class)
+		//		.slash(cidade.getEstado().getId()).withSelfRel());
+
 		
-		 if(cidade != null) {
-			 return ResponseEntity.ok(cidade);
-			}
-		 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		// cidade.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
+		// .withRel("cidades"));
+
+		// cidade.add(WebMvcLinkBuilder.linkTo(CidadeController.class)
+		// .slash(cidade.getId()).withSelfRel());
+
+		// cidade.add(new Link("http://localhost:8080/cidades/1")) ;
+		// cidade.add(new
+		// Link("http://localhost:8080/cidades",IanaLinkRelations.COLLECTION));
+		// cidade.add(new Link("http://localhost:8080/cidades","cidades"));
+
+		if (cidade != null) {
+			return ResponseEntity.ok(cidade);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-	
-	
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cidade salvar (@RequestBody @Valid Cidade cidade) {
+	public Cidade salvar(@RequestBody @Valid Cidade cidade) {
 		try {
-		Cidade cidadeSalva =  cidadeService.salvar(cidade);
-		
-		
-		ResourceUriHelper.addUriResponseHeader(cidadeSalva.getId());
-		
-		return cidadeSalva;
-		}catch(EntidadeNaoEncontradaException e){
-			throw new NegocioException (e.getMessage());
+			Cidade cidadeSalva = cidadeService.salvar(cidade);
+
+			ResourceUriHelper.addUriResponseHeader(cidadeSalva.getId());
+
+			return cidadeSalva;
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
 		}
-		
+
 	}
-	
+
 	@PutMapping("/{id}")
-	//@ResponseStatus(HttpStatus.CREATED)
-	public Cidade atualizar(@PathVariable Long id,
-			@RequestBody Cidade cidadeNova) {			
-			
-					Cidade cidadeVelha  = cidadeService.buscarOuFalhar(id);
-					BeanUtils.copyProperties(cidadeNova, cidadeVelha, "id");
-					
-					try {
-					return cidadeService.salvar(cidadeNova);		
-					
-				
-					
-					}catch(EntidadeNaoEncontradaException e) {
-					System.out.println("deu errado");
-				   throw new NegocioException(e.getMessage()) {	};
-					//return ResponseEntity.badRequest().body(e.getMessage());
-				}	
-								//		if(cidadeVelha != null ) {
-								//			cidadeVelha.setNome(cidade.getNome());
-								//			cidadeVelhal.setEstado(cidade.getEstado());	//}
+	// @ResponseStatus(HttpStatus.CREATED)
+	public Cidade atualizar(@PathVariable Long id, @RequestBody Cidade cidadeNova) {
+
+		Cidade cidadeVelha = cidadeService.buscarOuFalhar(id);
+		BeanUtils.copyProperties(cidadeNova, cidadeVelha, "id");
+
+		try {
+			return cidadeService.salvar(cidadeNova);
+
+		} catch (EntidadeNaoEncontradaException e) {
+			System.out.println("deu errado");
+			throw new NegocioException(e.getMessage()) {
+			};
+			// return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		// if(cidadeVelha != null ) {
+		// cidadeVelha.setNome(cidade.getNome());
+		// cidadeVelhal.setEstado(cidade.getEstado()); //}
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Cidade> excluir(@PathVariable Long id) {
-		
-			cidadeService.excluir(id);	
+
+		cidadeService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
-	
-	/*
-	  @ExceptionHandler(EntidadeNaoEncontradaException.class)
-	  public ResponseEntity<?> tratarEstadoNaoEncontradoException(
-			  EntidadeNaoEncontradaException e){
-		  Problema problema = Problema.builder()
-		  		.dataHora(LocalDateTime.now())
-		  		.mensagem(e.getMessage()).build();
-		 	  
-		  
-		  return ResponseEntity.status(HttpStatus.NOT_FOUND).body
-				  (problema);
-	  }
 
-	  @ExceptionHandler(NegocioException.class)
-	  public ResponseEntity<?> tratarNegocioException(NegocioException e){	  
-		  return ResponseEntity.status(HttpStatus.BAD_REQUEST).
-				  body(e.getMessage());
-	  }
-	  */
+	/*
+	 * @ExceptionHandler(EntidadeNaoEncontradaException.class) public
+	 * ResponseEntity<?> tratarEstadoNaoEncontradoException(
+	 * EntidadeNaoEncontradaException e){ Problema problema = Problema.builder()
+	 * .dataHora(LocalDateTime.now()) .mensagem(e.getMessage()).build();
+	 * 
+	 * 
+	 * return ResponseEntity.status(HttpStatus.NOT_FOUND).body (problema); }
+	 * 
+	 * @ExceptionHandler(NegocioException.class) public ResponseEntity<?>
+	 * tratarNegocioException(NegocioException e){ return
+	 * ResponseEntity.status(HttpStatus.BAD_REQUEST). body(e.getMessage()); }
+	 */
 }
