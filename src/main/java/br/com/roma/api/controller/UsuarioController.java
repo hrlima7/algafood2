@@ -1,5 +1,7 @@
 package br.com.roma.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -8,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +50,7 @@ public class UsuarioController {
 	
 		Usuario usuario = usuarioService.BuscarOufalhar(usuarioId);
 	
+		
 		return toModel(usuario);
 	}
 	
@@ -98,9 +102,16 @@ public class UsuarioController {
 	
 	public UsuarioModelDTO toModel(Usuario usuario) {
 		UsuarioModelDTO usuarioModelDTO  = new UsuarioModelDTO();
-		
+	
 		usuarioModelDTO.setNome(usuario.getNome());
 		usuarioModelDTO.setEmail(usuario.getEmail());
+		
+		usuarioModelDTO.add(WebMvcLinkBuilder.linkTo(methodOn(UsuarioController.class)
+				.buscar(usuario.getId())).withSelfRel());
+		
+		usuarioModelDTO.add(WebMvcLinkBuilder.linkTo(methodOn(UsuarioController.class)
+				.listar()).withRel("usuarios"));
+				
 		
 		return usuarioModelDTO;
 		

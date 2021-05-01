@@ -9,7 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,10 +41,32 @@ public class CidadeController implements Serializable {
 	@Autowired
 	CidadeService cidadeService;
 
+	@SuppressWarnings("deprecation")
 	@ApiOperation("Lista as cidades")
 	@GetMapping
-	public List<Cidade> listar() {
-		return cidadeService.buscarTodos();
+	public CollectionModel<Cidade> listar() {
+		
+		List<Cidade> cidade = cidadeService.buscarTodos();
+		
+	CollectionModel<Cidade> cidadesModel =  new CollectionModel<>(cidade);
+	
+	cidadesModel.forEach(cidade1 -> {
+		cidade1.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class)
+				.buscar(cidade1.getId())).withSelfRel());
+		
+		cidade1.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class)
+				.listar()).withRel("cidades"));
+		
+		cidade1.getEstado()
+				.add(WebMvcLinkBuilder.linkTo(methodOn(EstadoController.class)
+						.buscar(cidade1.getEstado().getId())).withSelfRel());
+		
+	});
+	CollectionModel<Cidade> cidadesCollectionModel = new CollectionModel<>(cidadesModel);
+	
+			cidadesCollectionModel.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
+			
+	return cidadesCollectionModel;
 	}
 
 	@SuppressWarnings({ "deprecation", "unused" })
