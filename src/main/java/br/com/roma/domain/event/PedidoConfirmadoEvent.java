@@ -5,9 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+//@AllArgsConstructor
 public class PedidoConfirmadoEvent {
 
 	private Pedido pedido;
+
+	public PedidoConfirmadoEvent(Pedido pedido) {
+		super();
+		this.pedido = pedido;
+	}
+	
 	
 }
